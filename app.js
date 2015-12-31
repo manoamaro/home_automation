@@ -5,13 +5,15 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+var app = express();
+var io = require('socket.io')();
+app.io = io;
+
+var routes = require('./routes/index')(io);
 var users = require('./routes/users');
 
 var levelup = require('level');
 var db = levelup('./mydb');
-
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -1,5 +1,16 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div(id='eventlist')
+    button(onclick="test('l1',0)") Light 1 On
+    button(onclick="test('l1',1)") Light 1 Off
+    button(onclick="test('l2',0)") Light 2 On
+    button(onclick="test('l2',1)") Light 2 Off
+
+  script(src='/socket.io/socket.io.js')
+  script(type='text/javascript').
+    var socket = io();
+    
+    function test(light, value) {
+      socket.emit('light', {light: light, value: value});
+    }
