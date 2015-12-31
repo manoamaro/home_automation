@@ -9,8 +9,10 @@ var app = express();
 var io = require('socket.io')();
 app.io = io;
 
-var routes = require('./routes/index')(io);
-var users = require('./routes/users');
+var socket = require('./routes/socket')(io);
+
+var routes = require('./routes/index');
+var users  = require('./routes/users');
 
 var levelup = require('level');
 var db = levelup('./mydb');
@@ -27,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+//app.use('/', routes);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
