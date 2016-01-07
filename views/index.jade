@@ -1,16 +1,42 @@
 extends layout
 
 block content
-  div(id='eventlist')
-    button(onclick="test('l1',0)") Light 1 On
-    button(onclick="test('l1',1)") Light 1 Off
-    button(onclick="test('l2',0)") Light 2 On
-    button(onclick="test('l2',1)") Light 2 Off
+  div(id='switches')
+  div(id="buttons")
+  div(id="temp")
+  div(id="hum")
 
   script(src='/socket.io/socket.io.js')
   script(type='text/javascript').
     var socket = io();
-    
-    function test(light, value) {
-      socket.emit('light', {light: light, value: value});
-    }
+    socket.on('update', function(data) {
+      console.log(data);
+      $('#' + data.button).prop('checked', data.value);
+    });
+
+    socket.on('update_sensor', function(data) {
+      $('#temp').text(data.data.temperature);
+      $('#hum').text(data.data.humidity);
+    });
+
+    socket.on('devices', function(data) {
+      console.log(data);
+      for (var i = 0; i < data.length; i++) {
+        var dev = data[i];
+        if (dev.type == 'switch') {
+          var btn = $('<button>', {'data-id': dev.id, text: dev.name, status: '0', class: 'waves-effect waves-light btn'});
+          btn.click(function() {
+            var status = $(this).attr('status');
+            var id     = $(this).attr('data-id');
+            socket.emit('switch', {id: id, value: Number(status)});
+            $(this).attr('status', 1 - status);
+          });
+          $('#switches').append(btn);
+        } else if (dev.type == 'button') {
+          var btn = $('<input>', {id: dev.id, type: 'checkbox', checked: false});
+          var label = $('<label>', {'for': dev.id, text: dev.name});
+          $('#buttons').append(btn);
+          $('#buttons').append(label);
+        }
+      }
+    });

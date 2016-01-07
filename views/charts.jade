@@ -1,0 +1,54 @@
+extends layout
+
+block content
+  div(style='width:100%')
+    div
+      canvas(id='canvasTemp', height="450", width="600")
+
+  div(style='width:100%')
+    div
+      canvas(id='canvasHumid', height="450", width="600")
+
+  script(type='text/javascript').
+        var lineChartData = {
+              labels : [],
+              datasets : [
+                {
+                  label: "My First dataset",
+                  fillColor : "rgba(151,187,205,0.2)",
+                  strokeColor : "rgba(151,187,205,1)",
+                  pointColor : "rgba(151,187,205,1)",
+                  pointStrokeColor : "#fff",
+                  pointHighlightFill : "#fff",
+                  pointHighlightStroke : "rgba(151,187,205,1)",
+                  animation: false, 
+                  data : []
+                }
+              ]
+            }
+        $(function() {
+          Chart.defaults.global.animation = false;
+          var ctx = document.getElementById("canvasTemp").getContext("2d");
+          window.myLineTemp = new Chart(ctx).Line(lineChartData, {
+            responsive: true
+          });
+
+          ctx = document.getElementById("canvasHumid").getContext("2d");
+          window.myLineHumid = new Chart(ctx).Line(lineChartData, {
+            responsive: true
+          });
+
+          $.get('http://' + location.hostname + ':5984/temperature/_design/graphs/_view/by_date?group_level=4', function(data) {
+            var jData = JSON.parse(data);
+            for(var i = 0; i < jData.rows.length; i++) {
+              window.myLineTemp.addData([jData.rows[i].value], jData.rows[i].key);
+            }
+          });
+
+          $.get('http://' + location.hostname + ':5984/humidity/_design/graphs/_view/by_date?group_level=4', function(data) {
+            var jData = JSON.parse(data);
+            for(var i = 0; i < jData.rows.length; i++) {
+              window.myLineHumid.addData([jData.rows[i].value], jData.rows[i].key);
+            }
+          });
+        });
