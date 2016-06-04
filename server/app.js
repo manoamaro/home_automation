@@ -27,9 +27,11 @@ server.on('ready', setup);
 
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
+  console.log(password.toString());
   if (username === 'device') {
-    ref.orderByKey().equalTo(password).once("value", function(snap) {
-      callback(null, true);
+    ref.orderByKey().equalTo(password.toString()).once("value", function(snap) {
+      console.log(snap.val());
+      callback(null, snap.val());
     });
   }
 }
