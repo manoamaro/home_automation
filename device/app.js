@@ -10,9 +10,11 @@ var client = mqtt.connect(config.server_url, {
 var clientPrefix = '/' + config.device_id + '/';
 var buttons = {};
 
-function onButtonPressed(topic, message) {
-
+function onMessage(topic, message, packet) {
+  console.log(topic);
 }
+
+client.on('message', onMessage);
 
 client.on('connect', function () {
   console.log('connected');
@@ -20,7 +22,7 @@ client.on('connect', function () {
 
   for (var i = 0; i < config.device_info.buttons.length; i++) {
     buttons[config.device_info.buttons[i].id] = new Gpio(config.device_info.buttons[i].port, 'out');
-    client.on(clientPrefix + 'buttons/' + config.device_info.buttons[i].id, onButtonPressed);
+    client.subscribe(clientPrefix + 'buttons/' + config.device_info.buttons[i].id);
   }
 
 });

@@ -44,6 +44,7 @@ var authorizePublish = function(client, topic, payload, callback) {
 // In this case the client authorized as alice can subscribe to /users/alice taking
 // the username from the topic and verifing it is the same of the authorized user
 var authorizeSubscribe = function(client, topic, callback) {
+  console.log(topic);
   callback(null, client.device_id == topic.split('/')[1]);
 }
 
