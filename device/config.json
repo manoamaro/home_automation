@@ -1,5 +1,6 @@
 {
-  "server_url": "mqtt://104.131.35.244:1883",
+  "server_url": "mqtt://192.168.0.20:1883",
+  "device_id": "c58e576ab2c47cb30247ba039bf33a45249dd452",
   "client_id": "aosidjSasdasidajoiej1o2fbvfdgj23",
   "device_info": [{}]
 }

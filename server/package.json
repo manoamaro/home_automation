@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "firebase": "^3.0.3",
-    "mosca": "^1.4.0"
+    "mosca": "^1.4.0",
+    "redis": "^2.6.1"
   }
 }

@@ -1,0 +1,12 @@
+{
+  "devices": {
+    "c58e576ab2c47cb30247ba039bf33a45249dd452" : {
+      "buttons": ["b1"],
+      "outputs": ["out1"]
+    },
+    "f187014c41011ab272f50033c676886a766da2a9" : {
+      "buttons": ["b1", "b2"],
+      "outputs": ["out1", "out2"]
+    }
+  }
+}
