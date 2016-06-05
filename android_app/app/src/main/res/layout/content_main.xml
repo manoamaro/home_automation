@@ -9,19 +9,26 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:text="Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/button3"
-            android:layout_weight="1" />
-        <Button
-            android:text="Button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Button 01"
+            />
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/button4"
-            android:layout_weight="1" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button 02"
+            />
 
     </LinearLayout>
 </LinearLayout>

@@ -5,8 +5,12 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
 
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -23,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AuthActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = "MainActivity";
 
@@ -33,7 +37,12 @@ public class MainActivity extends AuthActivity
     DrawerLayout mDrawer;
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
-    private CallbackConnection connection;
+    @BindView(R.id.button3)
+    SwitchCompat button3;
+    @BindView(R.id.button4)
+    SwitchCompat button4;
+
+    private CallbackConnection mMqttConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +61,17 @@ public class MainActivity extends AuthActivity
         mNavigationView.setNavigationItemSelectedListener(this);
 
 
+        button3.setOnCheckedChangeListener(this);
+        button4.setOnCheckedChangeListener(this);
 
         MQTT mqtt = new MQTT();
         try {
             mqtt.setHost("tcp://192.168.0.20:1883");
             mqtt.setClientId("10");
 
-            connection = mqtt.callbackConnection();
+            mMqttConnection = mqtt.callbackConnection();
 
-            connection.listener(new Listener() {
+            mMqttConnection.listener(new Listener() {
                 @Override
                 public void onConnected() {
 
@@ -82,10 +93,9 @@ public class MainActivity extends AuthActivity
                 }
             });
 
-            connection.connect(new Callback<Void>() {
+            mMqttConnection.connect(new Callback<Void>() {
                 @Override
                 public void onSuccess(Void value) {
-                    connection.subscribe(new Topic[]{new Topic("TESTE", QoS.AT_LEAST_ONCE)}, null);
                 }
 
                 @Override
@@ -118,11 +128,36 @@ public class MainActivity extends AuthActivity
                 getmAuth().signOut();
                 break;
             case R.id.nav_share:
-                connection.publish("TESTE", "TEST".getBytes(), QoS.AT_LEAST_ONCE, false, null);
+                mMqttConnection.publish("TESTE", "TEST".getBytes(), QoS.AT_LEAST_ONCE, false, null);
                 break;
         }
 
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button3:
+                mMqttConnection.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button01", "1".getBytes(), QoS.EXACTLY_ONCE, false, null);
+                break;
+            case R.id.button4:
+                mMqttConnection.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button02", "1".getBytes(), QoS.EXACTLY_ONCE, false, null);
+                break;
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton v, boolean isChecked) {
+        String value = isChecked ? "1" : "0";
+        switch (v.getId()) {
+            case R.id.button3:
+                mMqttConnection.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button01", value.getBytes(), QoS.EXACTLY_ONCE, false, null);
+                break;
+            case R.id.button4:
+                mMqttConnection.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button02", value.getBytes(), QoS.EXACTLY_ONCE, false, null);
+                break;
+        }
     }
 }

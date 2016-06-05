@@ -1,5 +1,11 @@
 var mqtt = require('mqtt');
-var Gpio = require('onoff').Gpio;
+if (process.env['DEVICE'])
+  var Gpio = require('onoff').Gpio;
+else {
+  var Gpio = function(arg0, arg1) {
+    return {};
+  }
+ }
 var config = require('./config.json')
 
 var client = mqtt.connect(config.server_url, {

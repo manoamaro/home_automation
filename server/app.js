@@ -32,13 +32,19 @@ var authenticate = function(client, username, password, callback) {
       client.device_id = password.toString();
       callback(null, true);
     });
+  } else {
+    callback(null, true);
   }
 }
 
 // In this case the client authorized as alice can publish to /users/alice taking
 // the username from the topic and verifing it is the same of the authorized user
 var authorizePublish = function(client, topic, payload, callback) {
-  callback(null, client.device_id == topic.split('/')[1]);
+  console.log(topic);
+  if (client.device_id)
+    callback(null, client.device_id == topic.split('/')[1]);
+  else
+  callback(null, true);
 }
 
 // In this case the client authorized as alice can subscribe to /users/alice taking
