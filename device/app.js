@@ -17,7 +17,12 @@ var clientPrefix = '/' + config.device_id + '/';
 var buttons = {};
 
 function onMessage(topic, message, packet) {
-  console.log(topic);
+  var args = topic.split('/');
+  if(args[1] == config.device_id) {
+    if (args[2] == 'buttons' && buttons[args[3]]) {
+      buttons[args[3]].writeSync(message.toString());
+    }
+  }
 }
 
 client.on('message', onMessage);

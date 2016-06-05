@@ -2,6 +2,7 @@ package br.com.amaro.manoel.homeautomation;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -41,6 +42,8 @@ public class MainActivity extends AuthActivity
     SwitchCompat button3;
     @BindView(R.id.button4)
     SwitchCompat button4;
+    @BindView(R.id.content_main)
+    View contentMain;
 
     private CallbackConnection mMqttConnection;
 
@@ -67,7 +70,7 @@ public class MainActivity extends AuthActivity
         MQTT mqtt = new MQTT();
         try {
             mqtt.setHost("tcp://192.168.0.20:1883");
-            mqtt.setClientId("10");
+            mqtt.setClientId(getmUser().getUid());
 
             mMqttConnection = mqtt.callbackConnection();
 
@@ -96,10 +99,14 @@ public class MainActivity extends AuthActivity
             mMqttConnection.connect(new Callback<Void>() {
                 @Override
                 public void onSuccess(Void value) {
+                    Snackbar.make(contentMain, "Connected to the server", Snackbar.LENGTH_SHORT)
+                            .show();
                 }
 
                 @Override
                 public void onFailure(Throwable value) {
+                    Snackbar.make(contentMain, value.getMessage(), Snackbar.LENGTH_INDEFINITE)
+                            .show();
                 }
             });
 
@@ -128,7 +135,6 @@ public class MainActivity extends AuthActivity
                 getmAuth().signOut();
                 break;
             case R.id.nav_share:
-                mMqttConnection.publish("TESTE", "TEST".getBytes(), QoS.AT_LEAST_ONCE, false, null);
                 break;
         }
 
