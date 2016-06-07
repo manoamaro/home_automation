@@ -1,6 +1,11 @@
 package br.com.amaro.manoel.homeautomation;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,11 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import br.com.amaro.manoel.homeautomation.service.MqttService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AuthActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = "MainActivity";
 
@@ -29,8 +36,8 @@ public class MainActivity extends AuthActivity
     SwitchCompat button3;
     @BindView(R.id.button4)
     SwitchCompat button4;
-    @BindView(R.id.content_main)
-    View contentMain;
+
+    private MqttService mService;
 
     @Override
     protected void onCreateAuthenticated(Bundle savedInstanceState) {
@@ -50,7 +57,20 @@ public class MainActivity extends AuthActivity
 
         button3.setOnCheckedChangeListener(this);
         button4.setOnCheckedChangeListener(this);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, MqttService.class);
+        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mService != null)
+            unbindService(mServiceConnection);
     }
 
     @Override
@@ -98,4 +118,16 @@ public class MainActivity extends AuthActivity
                 break;
         }
     }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mService = ((MqttService.MqttServiceBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+    };
 }

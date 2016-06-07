@@ -2,9 +2,15 @@ package br.com.amaro.manoel.homeautomation.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
@@ -29,6 +35,8 @@ public class MqttService extends Service implements Listener, Callback<Void> {
     FirebaseAuth mFirebaseAuth;
 
     private CallbackConnection mMqttConnection;
+    private final MqttServiceBinder mBinder = new MqttServiceBinder();
+    private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
     public MqttService() {
     }
@@ -39,11 +47,11 @@ public class MqttService extends Service implements Listener, Callback<Void> {
         ((MyApplication) getApplication()).getComponent().inject(this);
         if (mFirebaseAuth.getCurrentUser() != null) {
             mRemoteConfig.fetch()
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onSuccess(Void aVoid) {
+                        public void onComplete(@NonNull Task<Void> task) {
                             mRemoteConfig.activateFetched();
-                            connectMqtt(mRemoteConfig.getString(""), mFirebaseAuth.getCurrentUser().getUid());
+                            connectMqtt(mRemoteConfig.getString("mqtt_server_url"), mFirebaseAuth.getCurrentUser().getUid());
                         }
                     });
         }
@@ -51,7 +59,13 @@ public class MqttService extends Service implements Listener, Callback<Void> {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        mMqttConnection.disconnect(null);
+        return super.onUnbind(intent);
     }
 
     private void connectMqtt(String host, String clientId) {
@@ -74,12 +88,22 @@ public class MqttService extends Service implements Listener, Callback<Void> {
 
     @Override
     public void onConnected() {
-
+        mUiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MqttService.this, "Connected to the Server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public void onDisconnected() {
-
+        mUiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MqttService.this, "Disconnected to the Server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -89,6 +113,14 @@ public class MqttService extends Service implements Listener, Callback<Void> {
 
     @Override
     public void onFailure(Throwable throwable) {
-
+        Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_LONG).show();
     }
+
+
+    public class MqttServiceBinder extends Binder {
+        public MqttService getService() {
+            return MqttService.this;
+        }
+    }
+
 }
