@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import br.com.amaro.manoel.homeautomation.component.ApplicationModule;
 import br.com.amaro.manoel.homeautomation.fragment.SignInFragment;
+import br.com.amaro.manoel.homeautomation.service.MqttService;
 import dagger.Component;
 
 /**
@@ -19,6 +20,8 @@ public class MyApplication extends Application {
     @Component(modules = ApplicationModule.class)
     public interface ApplicationComponent {
         void inject(SignInFragment fragment);
+        void inject(MqttService service);
+        void inject(AuthActivity activity);
     }
 
 

@@ -9,26 +9,36 @@ import android.support.v7.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import javax.inject.Inject;
+
 /**
  * Created by manoel on 29/05/16.
  */
 
 public class AuthActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
-    private FirebaseAuth mAuth;
+    @Inject
+    FirebaseAuth mAuth;
+
     private FirebaseUser mUser;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected final void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAuth = FirebaseAuth.getInstance();
-        mAuth.addAuthStateListener(this);
+        ((MyApplication) getApplication()).getComponent().inject(this);
 
+        mAuth.addAuthStateListener(this);
         mUser = mAuth.getCurrentUser();
 
         if (mUser == null)
             startLogin();
+        else
+            onCreateAuthenticated(savedInstanceState);
+    }
+
+    protected void onCreateAuthenticated(Bundle savedInstanceState) {
+
     }
 
     private void startLogin() {
