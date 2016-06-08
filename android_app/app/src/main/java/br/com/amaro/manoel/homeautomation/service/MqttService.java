@@ -20,6 +20,8 @@ import org.fusesource.mqtt.client.Callback;
 import org.fusesource.mqtt.client.CallbackConnection;
 import org.fusesource.mqtt.client.Listener;
 import org.fusesource.mqtt.client.MQTT;
+import org.fusesource.mqtt.client.QoS;
+import org.fusesource.mqtt.client.Topic;
 
 import java.net.URISyntaxException;
 
@@ -81,9 +83,37 @@ public class MqttService extends Service implements Listener, Callback<Void> {
         }
     }
 
+    public void publish(String topic, String value) {
+        if (mMqttConnection != null) {
+            mMqttConnection.publish(topic, value.getBytes(), QoS.EXACTLY_ONCE, false, new Callback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                }
+
+                @Override
+                public void onFailure(final Throwable throwable) {
+                    mUiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MqttService.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    public void subscribe(String topic, Callback<byte[]> callback) {
+        if (mMqttConnection != null) {
+            Topic[] topics = new Topic[] {
+                    new Topic(topic, QoS.EXACTLY_ONCE)
+            };
+            mMqttConnection.subscribe(topics, callback);
+        }
+    }
+
     @Override
     public void onSuccess(Void aVoid) {
-
     }
 
     @Override
