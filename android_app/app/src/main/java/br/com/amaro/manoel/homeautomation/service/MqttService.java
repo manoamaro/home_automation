@@ -39,6 +39,7 @@ public class MqttService extends Service implements Listener, Callback<Void> {
     private CallbackConnection mMqttConnection;
     private final MqttServiceBinder mBinder = new MqttServiceBinder();
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
+    private Runnable onDisconnected;
 
     public MqttService() {
     }
@@ -85,7 +86,7 @@ public class MqttService extends Service implements Listener, Callback<Void> {
 
     public void publish(String topic, String value) {
         if (mMqttConnection != null) {
-            mMqttConnection.publish(topic, value.getBytes(), QoS.EXACTLY_ONCE, false, new Callback<Void>() {
+            mMqttConnection.publish(topic, value.getBytes(), QoS.AT_LEAST_ONCE, true, new Callback<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                 }
@@ -132,6 +133,9 @@ public class MqttService extends Service implements Listener, Callback<Void> {
             @Override
             public void run() {
                 Toast.makeText(MqttService.this, "Disconnected to the Server", Toast.LENGTH_SHORT).show();
+                if (MqttService.this.onDisconnected != null) {
+                    MqttService.this.onDisconnected.run();
+                }
             }
         });
     }
@@ -146,6 +150,9 @@ public class MqttService extends Service implements Listener, Callback<Void> {
         Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_LONG).show();
     }
 
+    public void setOnDisconnected(Runnable onDisconnected) {
+        this.onDisconnected = onDisconnected;
+    }
 
     public class MqttServiceBinder extends Binder {
         public MqttService getService() {

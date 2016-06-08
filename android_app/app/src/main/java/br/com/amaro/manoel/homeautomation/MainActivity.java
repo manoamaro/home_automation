@@ -113,8 +113,10 @@ public class MainActivity extends AuthActivity
         String value = isChecked ? "1" : "0";
         switch (v.getId()) {
             case R.id.button3:
+                this.mService.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button01", value);
                 break;
             case R.id.button4:
+                this.mService.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button02", value);
                 break;
         }
     }
