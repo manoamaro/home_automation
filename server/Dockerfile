@@ -3,9 +3,10 @@ FROM node:slim
 RUN mkdir app
 WORKDIR app
 
-ADD . /app/
-
+ADD package.json /app/
 RUN npm install
+
+ADD . /app/
 
 EXPOSE 1883
 

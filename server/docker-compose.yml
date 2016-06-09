@@ -1,0 +1,12 @@
+version: '2'
+services:
+  server:
+    build: .
+    depends_on:
+      - redis
+    environment:
+      REDIS_URL: redis
+    ports:
+      - "1883:1883"
+  redis:
+    image: redis

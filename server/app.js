@@ -14,7 +14,7 @@ var pubsubsettings = {
   db: 12,
   port: 6379,
   return_buffers: true,
-  host: "localhost"
+  host: process.env['REDIS_URL']
 };
 
 var moscaSettings = {
