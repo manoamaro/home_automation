@@ -6,13 +6,9 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -32,8 +28,6 @@ import br.com.amaro.manoel.homeautomation.MyApplication;
 public class MqttService extends Service implements Listener, Callback<Void> {
 
     @Inject
-    FirebaseRemoteConfig mRemoteConfig;
-    @Inject
     FirebaseAuth mFirebaseAuth;
 
     private CallbackConnection mMqttConnection;
@@ -49,14 +43,7 @@ public class MqttService extends Service implements Listener, Callback<Void> {
         super.onCreate();
         ((MyApplication) getApplication()).getComponent().inject(this);
         if (mFirebaseAuth.getCurrentUser() != null) {
-            mRemoteConfig.fetch()
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            mRemoteConfig.activateFetched();
-                            connectMqtt(mRemoteConfig.getString("mqtt_server_url"), mFirebaseAuth.getCurrentUser().getUid());
-                        }
-                    });
+            connectMqtt("tcp://192.168.25.52:1883", mFirebaseAuth.getCurrentUser().getUid());
         }
     }
 
