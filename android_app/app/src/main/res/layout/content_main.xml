@@ -8,28 +8,8 @@
     android:layout_marginTop="?actionBarSize"
     tools:showIn="@layout/app_bar_main">
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button 01"
-            />
-
-        <android.support.v4.widget.Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/button4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button 02"
-            />
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:id="@+id/device_io_recyclerview"/>
 </LinearLayout>

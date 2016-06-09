@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryDark"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/constraintLayout">
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/tile_button"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/ic_noun_399357_cc" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tile_button"
+            android:layout_alignEnd="@id/tile_button"
+            android:background="#44000000"
+            android:orientation="horizontal"
+            android:divider="?android:attr/dividerVertical"
+            android:gravity="center"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="Button 01"
+                android:id="@+id/textView2"
+                android:layout_weight="0.98"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:drawableStart="@drawable/ic_settings_black"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_weight="0.2"/>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -10,10 +10,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import br.com.amaro.manoel.homeautomation.service.MqttService;
@@ -32,10 +33,8 @@ public class MainActivity extends AuthActivity
     DrawerLayout mDrawer;
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
-    @BindView(R.id.button3)
-    SwitchCompat button3;
-    @BindView(R.id.button4)
-    SwitchCompat button4;
+    @BindView(R.id.device_io_recyclerview)
+    RecyclerView mDeviceIoRecyclerView;
 
     private MqttService mService;
 
@@ -55,8 +54,8 @@ public class MainActivity extends AuthActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        button3.setOnCheckedChangeListener(this);
-        button4.setOnCheckedChangeListener(this);
+        mDeviceIoRecyclerView.setAdapter(new RecyclerViewAdapter());
+
     }
 
     @Override
@@ -100,25 +99,12 @@ public class MainActivity extends AuthActivity
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button3:
-                break;
-            case R.id.button4:
-                break;
-        }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton v, boolean isChecked) {
         String value = isChecked ? "1" : "0";
-        switch (v.getId()) {
-            case R.id.button3:
-                this.mService.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button01", value);
-                break;
-            case R.id.button4:
-                this.mService.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button02", value);
-                break;
-        }
+        this.mService.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button01", value);
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -132,4 +118,29 @@ public class MainActivity extends AuthActivity
             mService = null;
         }
     };
+
+    class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.Holder> {
+        @Override
+        public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = getLayoutInflater().inflate(R.layout.tile_layout, null);
+            return new Holder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(Holder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return 0;
+        }
+
+        class Holder extends RecyclerView.ViewHolder {
+
+            public Holder(View itemView) {
+                super(itemView);
+            }
+        }
+    }
 }
