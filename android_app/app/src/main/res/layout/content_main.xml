@@ -5,7 +5,7 @@
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="?actionBarSize"
+    android:layout_marginTop="@dimen/actionBarSizeLarge"
     tools:showIn="@layout/app_bar_main">
 
     <android.support.v7.widget.RecyclerView
