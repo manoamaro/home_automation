@@ -43,7 +43,7 @@ public class MqttService extends Service implements Listener, Callback<Void> {
         super.onCreate();
         ((MyApplication) getApplication()).getComponent().inject(this);
         if (mFirebaseAuth.getCurrentUser() != null) {
-            connectMqtt("tcp://192.168.25.52:1883", mFirebaseAuth.getCurrentUser().getUid());
+            connectMqtt("tcp://192.168.0.85:1883", mFirebaseAuth.getCurrentUser().getUid());
         }
     }
 

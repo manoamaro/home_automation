@@ -4,14 +4,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +30,7 @@ public class MainActivity extends AuthActivity
     private static final String TAG = "MainActivity";
 
     @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    View mToolbar;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
     @BindView(R.id.nav_view)
@@ -45,13 +47,39 @@ public class MainActivity extends AuthActivity
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        BitmapDrawable bitmapDrawable = null;
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawer.addDrawerListener(toggle);
-        toggle.syncState();
+        int mToolbarBackgroundRes = R.drawable.bedroom;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            bitmapDrawable = (BitmapDrawable) getDrawable(mToolbarBackgroundRes);
+        } else {
+            getResources().getDrawable(mToolbarBackgroundRes);
+        }
+
+        bitmapDrawable.mutate();
+        bitmapDrawable.setTileModeXY(Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+
+        mToolbar.setBackground(bitmapDrawable);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            Palette.from(bitmapDrawable.getBitmap())
+                    .generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette palette) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        int defaultColor = MainActivity.this.getResources().getColor(R.color.colorPrimaryDark);
+                        int darkColor = palette.getDarkVibrantColor(defaultColor);
+                        int lightColor = palette.getLightVibrantColor(defaultColor);
+                        MainActivity.this.getWindow().setStatusBarColor(darkColor);
+                        MainActivity.this.getWindow().setNavigationBarColor(darkColor);
+                    }
+                }
+            });
+
+        }
+
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
