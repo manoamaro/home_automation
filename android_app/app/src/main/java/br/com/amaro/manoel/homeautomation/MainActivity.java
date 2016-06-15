@@ -18,17 +18,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.List;
 
+import br.com.amaro.manoel.homeautomation.model.Widget;
+import br.com.amaro.manoel.homeautomation.model.WidgetType;
 import br.com.amaro.manoel.homeautomation.service.MqttService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AuthActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
 
@@ -129,16 +131,6 @@ public class MainActivity extends AuthActivity
         return true;
     }
 
-    @Override
-    public void onClick(View v) {
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton v, boolean isChecked) {
-        String value = isChecked ? "1" : "0";
-        this.mService.publish("/c58e576ab2c47cb30247ba039bf33a45249dd452/buttons/button01", value);
-    }
-
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -151,28 +143,46 @@ public class MainActivity extends AuthActivity
         }
     };
 
-    class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.Holder> {
+    class RecyclerViewAdapter extends RecyclerView.Adapter<Holder> {
+
+        List<Widget> widgets = Arrays.asList(
+                new Widget(WidgetType.SWITCH, "Switch 01", "switch01"),
+                new Widget(WidgetType.SWITCH, "Switch 02", "switch02"),
+                new Widget(WidgetType.SWITCH, "Switch 03", "switch03"),
+                new Widget(WidgetType.SWITCH, "Switch 04", "switch04"),
+                new Widget(WidgetType.SWITCH, "Switch 05", "switch05")
+        );
+
         @Override
         public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = getLayoutInflater().inflate(R.layout.tile_layout, null);
+            View view = getLayoutInflater().inflate(R.layout.tile_layout, parent, false);
             return new Holder(view);
         }
 
         @Override
         public void onBindViewHolder(Holder holder, int position) {
-
+            holder.setWidget(widgets.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return widgets.size();
+        }
+    }
+
+    class Holder extends RecyclerView.ViewHolder {
+
+        Widget widget;
+        final TextView widgetName;
+
+        Holder(View itemView) {
+            super(itemView);
+            widgetName = (TextView) itemView.findViewById(R.id.widget_name);
         }
 
-        class Holder extends RecyclerView.ViewHolder {
-
-            public Holder(View itemView) {
-                super(itemView);
-            }
+        void setWidget(Widget widget) {
+            this.widget = widget;
+            this.widgetName.setText(widget.getName());
         }
     }
 }
