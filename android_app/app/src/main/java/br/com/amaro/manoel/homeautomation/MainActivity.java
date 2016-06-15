@@ -13,11 +13,14 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+
+import java.util.List;
 
 import br.com.amaro.manoel.homeautomation.service.MqttService;
 import butterknife.BindView;
@@ -47,17 +50,16 @@ public class MainActivity extends AuthActivity
 
         ButterKnife.bind(this);
 
-        BitmapDrawable bitmapDrawable = null;
+        BitmapDrawable bitmapDrawable;
 
-        int mToolbarBackgroundRes = R.drawable.bedroom;
+        int mToolbarBackgroundRes = R.drawable.city;
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             bitmapDrawable = (BitmapDrawable) getDrawable(mToolbarBackgroundRes);
         } else {
-            getResources().getDrawable(mToolbarBackgroundRes);
+            bitmapDrawable = (BitmapDrawable) getResources().getDrawable(mToolbarBackgroundRes);
         }
 
-        bitmapDrawable.mutate();
         bitmapDrawable.setTileModeXY(Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
 
         mToolbar.setBackground(bitmapDrawable);
@@ -83,6 +85,7 @@ public class MainActivity extends AuthActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        mDeviceIoRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mDeviceIoRecyclerView.setAdapter(new RecyclerViewAdapter());
 
     }
