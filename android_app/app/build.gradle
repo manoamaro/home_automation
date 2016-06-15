@@ -20,6 +20,7 @@ android {
     }
 }
 
+def dbflow_version = "3.0.1"
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -41,6 +42,18 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
     compile 'org.fusesource.mqtt-client:mqtt-client:1.12'
+
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
+    // use kapt for kotlin apt
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
+    compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
+
+    // sql-cipher database encyrption (optional)
+    compile "com.github.Raizlabs.DBFlow:dbflow-sqlcipher:${dbflow_version}"
+
+    // kotlin extensions
+    compile "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:${dbflow_version}"
+
     testCompile 'junit:junit:4.12'
 }
 
