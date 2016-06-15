@@ -2,6 +2,9 @@ package br.com.amaro.manoel.homeautomation;
 
 import android.app.Application;
 
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+
 import javax.inject.Singleton;
 
 import br.com.amaro.manoel.homeautomation.component.ApplicationModule;
@@ -24,7 +27,6 @@ public class MyApplication extends Application {
         void inject(AuthActivity activity);
     }
 
-
     private ApplicationComponent component;
 
     @Override
@@ -32,6 +34,10 @@ public class MyApplication extends Application {
         super.onCreate();
         component = DaggerMyApplication_ApplicationComponent.builder()
                 .build();
+
+        FlowManager.init(new FlowConfig.Builder(this)
+                .openDatabasesOnInit(true)
+                .build());
     }
 
     public ApplicationComponent getComponent() {
