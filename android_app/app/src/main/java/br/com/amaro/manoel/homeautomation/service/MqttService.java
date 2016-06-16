@@ -133,8 +133,14 @@ public class MqttService extends Service implements Listener, Callback<Void> {
     }
 
     @Override
-    public void onFailure(Throwable throwable) {
-        Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+    public void onFailure(final Throwable throwable) {
+        mUiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MqttService.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     public void setOnDisconnected(Runnable onDisconnected) {

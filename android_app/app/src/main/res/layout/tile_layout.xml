@@ -8,18 +8,20 @@
     android:layout_margin="3dp">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:id="@+id/constraintLayout">
 
-        <CheckBox
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/tile_button"
-            android:layout_width="match_parent"
-            android:layout_height="150dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:switchMinWidth="45dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/tile_button"
+            android:layout_alignParentBottom="true"
             android:background="#66000000"
             android:orientation="horizontal"
             android:paddingStart="5dp"
