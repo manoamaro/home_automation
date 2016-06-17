@@ -1,6 +1,7 @@
 package br.com.amaro.manoel.homeautomation.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -21,6 +22,8 @@ public class Widget extends BaseModel {
     @Column
     private String specificId;
     private WidgetType type;
+    @ForeignKey(tableClass = Device.class)
+    private Device device;
 
     public Widget() {
     }
@@ -61,5 +64,13 @@ public class Widget extends BaseModel {
 
     public void setSpecificId(String specificId) {
         this.specificId = specificId;
+    }
+
+    public Device getDevice() {
+        return device;
+    }
+
+    public void setDevice(Device device) {
+        this.device = device;
     }
 }
