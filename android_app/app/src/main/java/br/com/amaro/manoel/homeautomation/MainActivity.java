@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.database.transaction.QueryTransaction;
 
 import java.util.Arrays;
 import java.util.List;
@@ -95,11 +97,15 @@ public class MainActivity extends AuthActivity
         mAdapter = new RecyclerViewAdapter();
         mDeviceIoRecyclerView.setAdapter(mAdapter);
 
-        List<Widget> widgetList = SQLite.select()
+        SQLite.select()
                 .from(Widget.class).where(Widget_Table.device_id.eq(1))
-                .queryList();
-
-        mAdapter.setWidgets(widgetList);
+                .async()
+                .queryListResultCallback(new QueryTransaction.QueryResultListCallback<Widget>() {
+                    @Override
+                    public void onListQueryResult(QueryTransaction transaction, @Nullable List<Widget> tResult) {
+                        mAdapter.setWidgets(tResult);
+                    }
+                });
     }
 
     @Override
