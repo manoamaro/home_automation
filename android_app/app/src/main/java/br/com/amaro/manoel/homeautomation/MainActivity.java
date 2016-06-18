@@ -20,11 +20,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+
 import java.util.Arrays;
 import java.util.List;
 
 import br.com.amaro.manoel.homeautomation.model.Widget;
 import br.com.amaro.manoel.homeautomation.model.WidgetType;
+import br.com.amaro.manoel.homeautomation.model.Widget_Table;
 import br.com.amaro.manoel.homeautomation.service.MqttService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +47,7 @@ public class MainActivity extends AuthActivity
     RecyclerView mDeviceIoRecyclerView;
 
     private MqttService mService;
+    private RecyclerViewAdapter mAdapter;
 
     @Override
     protected void onCreateAuthenticated(Bundle savedInstanceState) {
@@ -88,8 +92,14 @@ public class MainActivity extends AuthActivity
         mNavigationView.setNavigationItemSelectedListener(this);
 
         mDeviceIoRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mDeviceIoRecyclerView.setAdapter(new RecyclerViewAdapter());
+        mAdapter = new RecyclerViewAdapter();
+        mDeviceIoRecyclerView.setAdapter(mAdapter);
 
+        List<Widget> widgetList = SQLite.select()
+                .from(Widget.class).where(Widget_Table.device_id.eq(1))
+                .queryList();
+
+        mAdapter.setWidgets(widgetList);
     }
 
     @Override
@@ -143,7 +153,7 @@ public class MainActivity extends AuthActivity
         }
     };
 
-    class RecyclerViewAdapter extends RecyclerView.Adapter<Holder> {
+    class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.Holder> {
 
         List<Widget> widgets = Arrays.asList(
                 new Widget(WidgetType.SWITCH, "Switch 01", "switch01"),
@@ -168,21 +178,28 @@ public class MainActivity extends AuthActivity
         public int getItemCount() {
             return widgets.size();
         }
-    }
 
-    class Holder extends RecyclerView.ViewHolder {
-
-        Widget widget;
-        final TextView widgetName;
-
-        Holder(View itemView) {
-            super(itemView);
-            widgetName = (TextView) itemView.findViewById(R.id.widget_name);
+        public void setWidgets(List<Widget> widgets) {
+            this.widgets = widgets;
+            this.notifyDataSetChanged();
         }
 
-        void setWidget(Widget widget) {
-            this.widget = widget;
-            this.widgetName.setText(widget.getName());
+        class Holder extends RecyclerView.ViewHolder {
+
+            Widget widget;
+            final TextView widgetName;
+
+            Holder(View itemView) {
+                super(itemView);
+                widgetName = (TextView) itemView.findViewById(R.id.widget_name);
+            }
+
+            void setWidget(Widget widget) {
+                this.widget = widget;
+                this.widgetName.setText(widget.getName());
+            }
         }
+
     }
+
 }
