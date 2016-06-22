@@ -1,0 +1,22 @@
+{
+  "server_url": "mqtt://192.168.0.20:1883",
+  "device_id": "c58e576ab2c47cb30247ba039bf33a45249dd452",
+  "client_id": "aosidjSasdasidajoiej1o2fbvfdgj23",
+  "device_info": {
+    "buttons": [
+      {
+        "id": "button01",
+        "port": 14
+      },
+      {
+        "id": "button02",
+        "port": 15
+      }
+    ],
+    "info": [
+      {
+        "type": "temperature"
+      }
+    ]
+  }
+}
